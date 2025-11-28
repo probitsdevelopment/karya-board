@@ -1,0 +1,452 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Container */
+.karya-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #f8fafc, #eff6ff, #eef2ff);
+  display: flex;
+  gap: 0;
+}
+
+/* Sidebar */
+.karya-sidebar {
+  width: 280px;
+  background: linear-gradient(to bottom, #1e293b, #334155);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.karya-sidebar-header {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.karya-sidebar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 1px;
+}
+
+.karya-sidebar-nav {
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.karya-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  color: #cbd5e1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+}
+
+.karya-sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.karya-sidebar-item.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: white;
+  border-left: 3px solid #3b82f6;
+}
+
+.karya-sidebar-icon {
+  font-size: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.karya-content {
+  flex: 1;
+  display: flex;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.karya-content>* {
+  width: 100%;
+}
+
+#kanban-board-wrapper {
+  width: 100% !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  display: block !important;
+  overflow: auto !important;
+}
+
+/* Header */
+.karya-header {
+  margin-bottom: 3rem;
+  text-align: center;
+  position: relative;
+}
+
+.karya-header-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.1;
+}
+
+.karya-header-bg::before {
+  content: '';
+  width: 24rem;
+  height: 24rem;
+  background: linear-gradient(to right, #60a5fa, #818cf8);
+  border-radius: 9999px;
+  filter: blur(80px);
+}
+
+.karya-title {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #1e293b, #2563eb, #4f46e5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.karya-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  position: relative;
+}
+
+/* Board Container */
+.karya-board {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.15);
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Columns List */
+.karya-columns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+/* Column */
+.karya-column {
+  position: relative;
+  background: linear-gradient(to right, #ffffff, rgba(248, 250, 252, 0.5));
+  border-radius: 0.75rem;
+  border: 2px solid rgba(226, 232, 240, 0.6);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.karya-column.hovered {
+  border-color: #a5b4fc;
+  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+  transform: scale(1.01);
+}
+
+.karya-column-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+/* Drag Handle */
+.karya-drag-handle {
+  cursor: move;
+  color: #94a3b8;
+  transition: color 0.2s;
+}
+
+.karya-drag-handle:hover {
+  color: #6366f1;
+}
+
+/* Position Input */
+.karya-position-wrapper {
+  display: flex;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.karya-position-input {
+  width: 3rem;
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: #4f46e5;
+  background: rgba(238, 242, 255, 0.5);
+  border: 2px solid #e0e7ff;
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+.karya-position-input:hover {
+  border-color: #a5b4fc;
+  background: rgba(238, 242, 255, 0.8);
+}
+
+.karya-position-input:focus {
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Hide spinner arrows in number input */
+.karya-position-input::-webkit-outer-spin-button,
+.karya-position-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.karya-position-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Column Title */
+.karya-column-title-wrapper {
+  flex: 1;
+}
+
+.karya-column-title {
+  padding: 0.5rem 1rem;
+  color: #334155;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.karya-column-title:hover {
+  color: #4f46e5;
+}
+
+.karya-column-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  color: #334155;
+  font-weight: 500;
+  background: rgba(238, 242, 255, 0.5);
+  border: 2px solid #a5b4fc;
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+/* Delete Button */
+.karya-delete-btn {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: #94a3b8;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.karya-column:hover .karya-delete-btn {
+  opacity: 1;
+}
+
+.karya-delete-btn:hover {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+/* Add Column Button */
+.karya-add-column-btn {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(to right, #f1f5f9, #f8fafc);
+  border: 2px dashed #cbd5e1;
+  border-radius: 0.75rem;
+  color: #475569;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.karya-add-column-btn:hover {
+  border-color: #818cf8;
+  background: linear-gradient(to right, #eef2ff, #eff6ff);
+  color: #4f46e5;
+  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+}
+
+.karya-add-column-btn:active {
+  transform: scale(0.99);
+}
+
+/* Action Buttons */
+.karya-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.karya-cancel-btn {
+  flex: 1;
+  padding: 0.875rem 1.5rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  color: #475569;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.karya-cancel-btn:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  transform: scale(1.01);
+}
+
+.karya-cancel-btn:active {
+  transform: scale(0.99);
+}
+
+.karya-create-btn {
+  flex: 1;
+  position: relative;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(to right, #4f46e5, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+.karya-create-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #6366f1, #3b82f6);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.karya-create-btn:hover::before {
+  opacity: 1;
+}
+
+.karya-create-btn:hover {
+  box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
+  transform: scale(1.01);
+}
+
+.karya-create-btn:active {
+  transform: scale(0.99);
+}
+
+.karya-create-btn svg {
+  position: relative;
+  z-index: 1;
+}
+
+/* Helper Text */
+.karya-helper {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.karya-helper p {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* Animation */
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .karya-container {
+    padding: 1rem;
+  }
+
+  .karya-title {
+    font-size: 2rem;
+  }
+
+  .karya-board {
+    padding: 1.5rem;
+  }
+
+  .karya-actions {
+    flex-direction: column;
+  }
+}
