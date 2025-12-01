@@ -2,56 +2,57 @@ import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { fetchColumns } from '../../../features/columns';
 import { fetchTasks } from '../../../features/tasks';
-import type { Task } from '../../../features/tasks/tasksSlice';
+import type { Task } from '../../../features/tasks/taskActions';
 import './KanbanBoard.css';
 
 export default function KanbanBoard() {
   const dispatch = useAppDispatch();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  const columns = useAppSelector((state) => state.columns?.columns || []);
+  const rawTasks = useAppSelector((state) => state.tasks?.tasks || []);
+
+  // Initial fetch on mount - ONLY if data doesn't exist
   const hasFetched = useRef(false);
-  const [isReady, setIsReady] = useState(false);
 
-  const columnsState = useAppSelector((state) => state.columns);
-  const tasksState = useAppSelector((state) => state.tasks);
-
-  const columns = columnsState?.columns || [];
-  const columnsLoading = columnsState?.loading || false;
-  const rawTasks = tasksState?.tasks || [];
-  const tasksLoading = tasksState?.loading || false;
-
-  // Smart Automatic Fetch
   useEffect(() => {
-    // Small timeout to allow initial render
+    // If we already have data in Redux, don't fetch again
+    if (hasFetched.current || (columns.length > 0 && rawTasks.length > 0)) {
+      setIsInitialLoad(false);
+      return;
+    }
+    
+    hasFetched.current = true;
+    console.log('KanbanBoard: Fetching data (first time)');
+    
+    dispatch(fetchColumns() as any);
+    dispatch(fetchTasks() as any);
+    
+    // Give time for initial data to load
     const timer = setTimeout(() => {
-      setIsReady(true);
-
-      if (!hasFetched.current) {
-        hasFetched.current = true;
-
-        // Only fetch if we don't have data yet
-        if (columns.length === 0) {
-          console.log('KB: Fetching columns...');
-          dispatch(fetchColumns());
-        }
-
-        if (rawTasks.length === 0) {
-          console.log('KB: Fetching tasks...');
-          dispatch(fetchTasks());
-        }
-      }
-    }, 100);
+      setIsInitialLoad(false);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [dispatch, columns.length, rawTasks.length]);
 
-  const columnBucketMap: Record<string, string> = {
-    'TO DO': 'todo',
-    'Clients Court': 'in-client',
-    'In Discussion': 'in-discussion',
-    'In Training': 'at-training',
-    'Payments': 'payment',
-    'Completed': 'completed',
-    'On hold': 'on-hold',
-    'Archive': 'archived',
+  // Helper function to convert column title to bucket name
+  const getBucketName = (columnTitle: string): string => {
+    // Predefined mappings for existing columns (for backward compatibility)
+    const knownMappings: Record<string, string> = {
+      'Dropped': 'dropped',
+      'TO DO': 'todo',
+      'Clients Court': 'in-client',
+      'In Discussion': 'in-discussion',
+      'In Training': 'at-training',
+      'Payments': 'payment',
+      'Completed': 'completed',
+      'On hold': 'on-hold',
+      'Archive': 'archived',
+    };
+
+    // Return known mapping if exists, otherwise auto-generate
+    return knownMappings[columnTitle] || columnTitle.toLowerCase().replace(/\s+/g, '-');
   };
 
   const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
@@ -72,19 +73,21 @@ export default function KanbanBoard() {
     return new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
-  // Initial render safety
-  if (!isReady) {
+  // Only show loader on very first load
+  if (isInitialLoad && columns.length === 0) {
     return (
       <div style={{
         width: '100%',
         height: '100vh',
-        background: '#667eea',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'white'
+        color: 'white',
+        fontSize: '18px',
+        fontWeight: '600'
       }}>
-        Initializing Board...
+        Loading Karya Board...
       </div>
     );
   }
@@ -123,8 +126,8 @@ export default function KanbanBoard() {
         {/* Force Refresh Button (Subtle backup) */}
         <button
           onClick={() => {
-            dispatch(fetchColumns());
-            dispatch(fetchTasks());
+            dispatch(fetchColumns() as any);
+            dispatch(fetchTasks() as any);
           }}
           style={{
             padding: '8px 16px',
@@ -141,27 +144,7 @@ export default function KanbanBoard() {
         </button>
       </div>
 
-      {/* Loading State */}
-      {(columnsLoading || tasksLoading) && (
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          padding: '40px',
-          textAlign: 'center',
-          marginBottom: '20px'
-        }}>
-          <div style={{
-            display: 'inline-block',
-            width: '50px',
-            height: '50px',
-            border: '5px solid #f3f4f6',
-            borderTopColor: '#667eea',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite'
-          }}></div>
-          <p style={{ marginTop: '16px', color: '#6b7280' }}>Loading Data...</p>
-        </div>
-      )}
+
 
       {/* Board Content */}
       <div style={{
@@ -172,7 +155,7 @@ export default function KanbanBoard() {
       }}>
         {sortedColumns.length > 0 ? (
           sortedColumns.map((column, index) => {
-            const bucketName = columnBucketMap[column.title] || column.title.toLowerCase().replace(/\s+/g, '-');
+            const bucketName = getBucketName(column.title);
             const columnTasks = rawTasks.filter((task: Task) => task && task['card-bucket'] === bucketName);
 
             const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
@@ -366,17 +349,15 @@ export default function KanbanBoard() {
             );
           })
         ) : (
-          !columnsLoading && !tasksLoading && (
-            <div style={{
-              width: '100%',
-              textAlign: 'center',
-              color: 'white',
-              fontSize: '18px',
-              paddingTop: '40px'
-            }}>
-              No columns found.
-            </div>
-          )
+          <div style={{
+            width: '100%',
+            textAlign: 'center',
+            color: 'white',
+            fontSize: '18px',
+            paddingTop: '40px'
+          }}>
+            No columns found.
+          </div>
         )}
       </div>
 

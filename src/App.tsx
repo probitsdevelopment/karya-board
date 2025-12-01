@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { fetchColumns, addColumn, deleteColumn, updateColumn } from './features/columns';
 import ColumnItem from './components/ColumnItem';
@@ -13,27 +13,27 @@ export default function KaryaBoard() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [activeTab, setActiveTab] = useState<'columns' | 'board'>('columns');
-
-  console.log('🏠 App: Active tab is', activeTab);
+  const hasFetchedColumns = useRef(false);
 
   useEffect(() => {
-    console.log('🏠 App: Fetching columns on mount');
-    dispatch(fetchColumns());
-  }, [dispatch]);
+    if (hasFetchedColumns.current) return;
+    hasFetchedColumns.current = true;
+    dispatch(fetchColumns() as any);
+  }, []);
 
   const handleAddColumn = async () => {
-    const result = await dispatch(addColumn('New Column'));
-    if (addColumn.fulfilled.match(result)) {
+    const result: any = await dispatch(addColumn('New Column') as any);
+    if (result && result.payload && result.payload.id) {
       setEditingId(result.payload.id);
     }
   };
 
   const handleDeleteColumn = (id: string) => {
-    dispatch(deleteColumn(id));
+    dispatch(deleteColumn(id) as any);
   };
 
   const handleUpdateColumnTitle = (id: string, newTitle: string) => {
-    dispatch(updateColumn({ id, title: newTitle }));
+    dispatch(updateColumn({ id, title: newTitle }) as any);
   };
 
   const handleUpdatePosition = (id: string, newPosition: number) => {
@@ -50,7 +50,7 @@ export default function KaryaBoard() {
     }
 
     // Update the position directly to allow duplicate detection in UI
-    dispatch(updateColumn({ id, position: newPosition }));
+    dispatch(updateColumn({ id, position: newPosition }) as any);
     return true;
   };
 
@@ -141,79 +141,87 @@ export default function KaryaBoard() {
 
         <div className="karya-content">
           {activeTab === 'board' ? (
-            <KanbanBoardView />
+            <KanbanBoardView key="kanban-board" />
           ) : (
-            <>
-              <div style={{ width: '100%', maxWidth: '56rem', margin: '0 auto', padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ width: '100%' }}>
-                  {/* Board Configuration Container */}
-                  <div className="karya-board">
-                    {/* Columns List */}
-                    <div className="karya-columns-list">
-                      {columns.map((column, index) => {
-                        const columnIdNum = parseInt(column.id);
-                        const isDeletable = !isNaN(columnIdNum) && columnIdNum > 8;
+            <div style={{ width: '100%', maxWidth: '56rem', margin: '0 auto', padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: '100%' }}>
+                {/* Page Header */}
+                <div style={{ marginBottom: '2rem' }}>
+                  <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '0.5rem' }}>
+                    Karya Board Columns
+                  </h1>
+                  <p style={{ fontSize: '1rem', color: '#6b7280' }}>
+                    Configure and manage your board columns
+                  </p>
+                </div>
 
-                        // Check for duplicate titles
-                        const isDuplicate = columns.filter(c => c.title.trim().toLowerCase() === column.title.trim().toLowerCase()).length > 1;
+                {/* Board Configuration Container */}
+                <div className="karya-board">
+                  {/* Columns List */}
+                  <div className="karya-columns-list">
+                    {columns.map((column, index) => {
+                      const columnIdNum = parseInt(column.id);
+                      const isDeletable = !isNaN(columnIdNum) && columnIdNum > 8;
 
-                        // Check for duplicate positions
-                        const isDuplicatePosition = columns.filter(c => c.position === column.position).length > 1;
+                      // Check for duplicate titles
+                      const isDuplicate = columns.filter(c => c.title.trim().toLowerCase() === column.title.trim().toLowerCase()).length > 1;
 
-                        return (
-                          <ColumnItem
-                            key={column.id}
-                            column={column}
-                            index={index}
-                            isEditing={editingId === column.id}
-                            isHovered={hoveredId === column.id}
-                            isDeletable={isDeletable}
-                            isDuplicate={isDuplicate}
-                            isDuplicatePosition={isDuplicatePosition}
-                            onEdit={setEditingId}
-                            onUpdate={handleUpdateColumnTitle}
-                            onUpdatePosition={handleUpdatePosition}
-                            onDelete={handleDeleteColumn}
-                            onHoverChange={setHoveredId}
-                            onEditComplete={() => setEditingId(null)}
-                          />
-                        );
-                      })}
-                    </div>
+                      // Check for duplicate positions
+                      const isDuplicatePosition = columns.filter(c => c.position === column.position).length > 1;
 
-                    {/* Add Column Button */}
-                    <button onClick={handleAddColumn} className="karya-add-column-btn">
-                      <PlusIcon />
-                      Add Column
-                    </button>
+                      return (
+                        <ColumnItem
+                          key={column.id}
+                          column={column}
+                          index={index}
+                          isEditing={editingId === column.id}
+                          isHovered={hoveredId === column.id}
+                          isDeletable={isDeletable}
+                          isDuplicate={isDuplicate}
+                          isDuplicatePosition={isDuplicatePosition}
+                          onEdit={setEditingId}
+                          onUpdate={handleUpdateColumnTitle}
+                          onUpdatePosition={handleUpdatePosition}
+                          onDelete={handleDeleteColumn}
+                          onHoverChange={setHoveredId}
+                          onEditComplete={() => setEditingId(null)}
+                        />
+                      );
+                    })}
+                  </div>
 
-                    {/* Action Buttons */}
-                    <div className="karya-actions">
-                      {(() => {
-                        const hasDuplicateTitles = columns.some(col => columns.filter(c => c.title.trim().toLowerCase() === col.title.trim().toLowerCase()).length > 1);
-                        const hasDuplicatePositions = columns.some(col => columns.filter(c => c.position === col.position).length > 1);
-                        const hasErrors = hasDuplicateTitles || hasDuplicatePositions;
+                  {/* Add Column Button */}
+                  <button onClick={handleAddColumn} className="karya-add-column-btn">
+                    <PlusIcon />
+                    Add Column
+                  </button>
 
-                        return (
-                          <button
-                            onClick={handleCreateBoard}
-                            className="karya-create-btn"
-                            disabled={hasErrors}
-                            style={{
-                              opacity: hasErrors ? 0.5 : 1,
-                              cursor: hasErrors ? 'not-allowed' : 'pointer'
-                            }}
-                          >
-                            <CheckIcon />
-                            Save
-                          </button>
-                        );
-                      })()}
-                    </div>
+                  {/* Action Buttons */}
+                  <div className="karya-actions">
+                    {(() => {
+                      const hasDuplicateTitles = columns.some(col => columns.filter(c => c.title.trim().toLowerCase() === col.title.trim().toLowerCase()).length > 1);
+                      const hasDuplicatePositions = columns.some(col => columns.filter(c => c.position === col.position).length > 1);
+                      const hasErrors = hasDuplicateTitles || hasDuplicatePositions;
+
+                      return (
+                        <button
+                          onClick={handleCreateBoard}
+                          className="karya-create-btn"
+                          disabled={hasErrors}
+                          style={{
+                            opacity: hasErrors ? 0.5 : 1,
+                            cursor: hasErrors ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          <CheckIcon />
+                          Save
+                        </button>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
