@@ -178,8 +178,8 @@ body {
 .karya-column-content {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
 }
 
 /* Drag Handle */
@@ -197,12 +197,12 @@ body {
 .karya-position-wrapper {
   display: flex;
   align-items: center;
-  margin-right: 0.5rem;
+  flex-shrink: 0;
 }
 
 .karya-position-input {
-  width: 3rem;
-  padding: 0.25rem 0.5rem;
+  width: 3.5rem;
+  padding: 0.5rem 0.625rem;
   text-align: center;
   font-weight: 600;
   color: #4f46e5;
@@ -239,14 +239,16 @@ body {
 /* Column Title */
 .karya-column-title-wrapper {
   flex: 1;
+  min-width: 0;
 }
 
 .karya-column-title {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   color: #334155;
   font-weight: 500;
   cursor: pointer;
   transition: color 0.2s;
+  word-break: break-word;
 }
 
 .karya-column-title:hover {
@@ -255,7 +257,7 @@ body {
 
 .karya-column-input {
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   color: #334155;
   font-weight: 500;
   background: rgba(238, 242, 255, 0.5);
@@ -264,26 +266,7 @@ body {
   outline: none;
 }
 
-/* Delete Button */
-.karya-delete-btn {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  color: #94a3b8;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  opacity: 0;
-  transition: all 0.2s;
-}
-
-.karya-column:hover .karya-delete-btn {
-  opacity: 1;
-}
-
-.karya-delete-btn:hover {
-  color: #ef4444;
-  background: #fef2f2;
-}
+/* Three Dot Menu - styles are inline in component for better control */
 
 /* Add Column Button */
 .karya-add-column-btn {
