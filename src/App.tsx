@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { fetchColumns, addColumn, deleteColumn, updateColumn } from './features/columns';
+import { fetchTasks } from './features/tasks';
 import ColumnItem from './components/ColumnItem';
 import { PlusIcon, CheckIcon } from './components/Icons';
 import Notification from './components/atoms/Notification';
@@ -9,6 +10,7 @@ import KanbanBoardView from './components/templates/KanbanBoard';
 export default function KaryaBoard() {
   const dispatch = useAppDispatch();
   const { columns, loading } = useAppSelector((state) => state.columns);
+  const tasks = useAppSelector((state) => state.tasks?.tasks || []);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -19,6 +21,7 @@ export default function KaryaBoard() {
     if (hasFetchedColumns.current) return;
     hasFetchedColumns.current = true;
     dispatch(fetchColumns() as any);
+    dispatch(fetchTasks() as any);
   }, []);
 
   const handleAddColumn = async () => {
@@ -28,8 +31,25 @@ export default function KaryaBoard() {
     }
   };
 
-  const handleDeleteColumn = (id: string) => {
+  const handleDeleteColumn = (id: string, cardCount: number, columnTitle: string) => {
+    // Business Rule: Only allow deletion if card count is 0
+    if (cardCount > 0) {
+      setNotification({
+        message: 'Cards are present in the selected bucket.',
+        type: 'error'
+      });
+      return;
+    }
+
+    // Show confirmation before deleting
+    const confirmed = window.confirm(`Are you sure you want to permanently delete the column "${columnTitle}"? This action cannot be undone.`);
+    if (!confirmed) return;
+
     dispatch(deleteColumn(id) as any);
+    setNotification({
+      message: `Column "${columnTitle}" deleted successfully!`,
+      type: 'success'
+    });
   };
 
   const handleUpdateColumnTitle = (id: string, newTitle: string) => {
@@ -52,6 +72,19 @@ export default function KaryaBoard() {
     // Update the position directly to allow duplicate detection in UI
     dispatch(updateColumn({ id, position: newPosition }) as any);
     return true;
+  };
+
+  // Helper function to convert column title to bucket name (same as in KanbanBoard)
+  const getBucketName = (columnTitle: string): string => {
+    const knownMappings: Record<string, string> = {
+      'TO DO': 'to-do',
+      'Clients Court': 'clients-court',
+      'In Training': 'in-training',
+      'Archive': 'archive',
+      // Optional columns (can be deleted)
+      'Payments': 'payments',
+    };
+    return knownMappings[columnTitle] || columnTitle.toLowerCase().replace(/\s+/g, '-').trim();
   };
 
   const handleCreateBoard = () => {
@@ -161,13 +194,19 @@ export default function KaryaBoard() {
                   <div className="karya-columns-list">
                     {columns.map((column, index) => {
                       const columnIdNum = parseInt(column.id);
-                      const isDeletable = !isNaN(columnIdNum) && columnIdNum > 8;
+                      // Mandatory columns: 1=TO DO, 2=Clients Court, 4=Archive, 6=In Training
+                      const mandatoryIds = [1, 2, 4, 6];
+                      const isDeletable = !isNaN(columnIdNum) && !mandatoryIds.includes(columnIdNum);
 
                       // Check for duplicate titles
                       const isDuplicate = columns.filter(c => c.title.trim().toLowerCase() === column.title.trim().toLowerCase()).length > 1;
 
                       // Check for duplicate positions
                       const isDuplicatePosition = columns.filter(c => c.position === column.position).length > 1;
+
+                      // Calculate card count for this column
+                      const bucketName = getBucketName(column.title);
+                      const cardCount = tasks.filter((task: any) => task && task['card-bucket'] === bucketName).length;
 
                       return (
                         <ColumnItem
@@ -179,10 +218,11 @@ export default function KaryaBoard() {
                           isDeletable={isDeletable}
                           isDuplicate={isDuplicate}
                           isDuplicatePosition={isDuplicatePosition}
+                          cardCount={cardCount}
                           onEdit={setEditingId}
                           onUpdate={handleUpdateColumnTitle}
                           onUpdatePosition={handleUpdatePosition}
-                          onDelete={handleDeleteColumn}
+                          onDelete={(id) => handleDeleteColumn(id, cardCount, column.title)}
                           onHoverChange={setHoveredId}
                           onEditComplete={() => setEditingId(null)}
                         />

@@ -16,162 +16,10 @@
       "attached-docs": 2,
       "requiremnet-created": "2025-11-27",
       "assigned-to": "Naveen Kumar",
-      "card-bucket": "in-discussion",
+      "card-bucket": "clients-court",
       "id": "df50"
     },
     {
-      "req-id": "REQ-2025-002",
-      "training-title": "Java Spring Boot Microservices",
-      "client-name": "TCS",
-      "mode-of-training": "Classroom",
-      "probability": 60,
-      "priority": "Medium",
-      "trainers-selected": {
-        "ai": 3,
-        "manual": 0
-      },
-      "due-date": "2025-12-15",
-      "comments": 3,
-      "attached-docs": 1,
-      "requiremnet-created": "2025-11-20",
-      "assigned-to": "Rohit Sharma",
-      "card-bucket": "todo",
-      "id": "e19b"
-    },
-    {
-      "req-id": "REQ-2025-003",
-      "training-title": "Power BI & DAX Advanced",
-      "client-name": "HDFC Bank",
-      "mode-of-training": "Online",
-      "probability": 92,
-      "priority": "Critical",
-      "trainers-selected": {
-        "ai": 4,
-        "manual": 2
-      },
-      "due-date": "2025-12-05",
-      "comments": 8,
-      "attached-docs": 4,
-      "requiremnet-created": "2025-11-18",
-      "assigned-to": "Sneha Rao",
-      "card-bucket": "in-client",
-      "id": "c37a"
-    },
-    {
-      "req-id": "REQ-2025-004",
-      "training-title": "AWS Cloud Practitioner",
-      "client-name": "Wipro",
-      "mode-of-training": "Hybrid",
-      "probability": 40,
-      "priority": "Low",
-      "trainers-selected": {
-        "ai": 1,
-        "manual": 1
-      },
-      "due-date": "2026-01-10",
-      "comments": 0,
-      "attached-docs": 0,
-      "requiremnet-created": "2025-11-02",
-      "assigned-to": "Rahul Verma",
-      "card-bucket": "archived",
-      "id": "a21b"
-    },
-    {
-      "req-id": "REQ-2025-005",
-      "training-title": "Leadership & Managerial Development",
-      "client-name": "Bosch",
-      "mode-of-training": "Classroom",
-      "probability": 75,
-      "priority": "High",
-      "trainers-selected": {
-        "ai": 3,
-        "manual": 3
-      },
-      "due-date": "2025-12-22",
-      "comments": 7,
-      "attached-docs": 3,
-      "requiremnet-created": "2025-11-25",
-      "assigned-to": "Karthik MG",
-      "card-bucket": "at-training",
-      "id": "1803"
-    },
-    {
-      "req-id": "REQ-2025-006",
-      "training-title": "SAP BTP Administration",
-      "client-name": "Siemens",
-      "mode-of-training": "Online",
-      "probability": 50,
-      "priority": "Medium",
-      "trainers-selected": {
-        "ai": 1,
-        "manual": 1
-      },
-      "due-date": "2025-12-18",
-      "comments": 2,
-      "attached-docs": 1,
-      "requiremnet-created": "2025-11-22",
-      "assigned-to": "Aishwarya",
-      "card-bucket": "in-discussion",
-      "id": "d90e"
-    },
-    {
-      "req-id": "REQ-2025-007",
-      "training-title": "GenAI for HR Teams",
-      "client-name": "Accenture",
-      "mode-of-training": "Hybrid",
-      "probability": 95,
-      "priority": "Critical",
-      "trainers-selected": {
-        "ai": 4,
-        "manual": 1
-      },
-      "due-date": "2025-12-02",
-      "comments": 9,
-      "attached-docs": 5,
-      "requiremnet-created": "2025-11-10",
-      "assigned-to": "Naveen Kumar",
-      "card-bucket": "in-client",
-      "id": "5d2d"
-    },
-    {
-      "req-id": "REQ-2025-008",
-      "training-title": "Data Science with R",
-      "client-name": "Capgemini",
-      "mode-of-training": "Classroom",
-      "probability": 30,
-      "priority": "Low",
-      "trainers-selected": {
-        "ai": 2,
-        "manual": 0
-      },
-      "due-date": "2026-01-05",
-      "comments": 1,
-      "attached-docs": 0,
-      "requiremnet-created": "2025-11-05",
-      "assigned-to": "Suresh N",
-      "card-bucket": "todo",
-      "id": "d112"
-    },
-    {
-      "req-id": "REQ-2025-009",
-      "training-title": "Cybersecurity Awareness for Employees",
-      "client-name": "Biocon",
-      "mode-of-training": "Online",
-      "probability": 78,
-      "priority": "High",
-      "trainers-selected": {
-        "ai": 2,
-        "manual": 2
-      },
-      "due-date": "2025-12-12",
-      "comments": 4,
-      "attached-docs": 2,
-      "requiremnet-created": "2025-11-14",
-      "assigned-to": "Pooja",
-      "card-bucket": "payment",
-      "id": "336c"
-    },
-    {
       "req-id": "REQ-2025-0070",
       "training-title": "Data Science with R",
       "client-name": "Capgemini",
@@ -180,19 +28,19 @@
       "priority": "Low",
       "trainers-selected": {
         "ai": 2,
-        "manual": 0
+        "manual": 5
       },
       "due-date": "2026-01-05",
       "comments": 1,
       "attached-docs": 0,
       "requiremnet-created": "2025-11-05",
       "assigned-to": "Suresh N",
-      "card-bucket": "quality-check",
+      "card-bucket": "to-do",
       "id": "d145"
     },
     {
-      "req-id": "REQ-2025-0070",
-      "training-title": "Data Science with R",
+      "req-id": "REQ-2025-011",
+      "training-title": "Data Science with R - Advanced",
       "client-name": "Capgemini",
       "mode-of-training": "Classroom",
       "probability": 30,
@@ -206,46 +54,8 @@
       "attached-docs": 0,
       "requiremnet-created": "2025-11-05",
       "assigned-to": "Suresh N",
-      "card-bucket": "dropped",
-      "id": "d145"
-    },
-    {
-      "req-id": "REQ-2025-0070",
-      "training-title": "Data Science with R",
-      "client-name": "Capgemini",
-      "mode-of-training": "Classroom",
-      "probability": 30,
-      "priority": "Low",
-      "trainers-selected": {
-        "ai": 2,
-        "manual": 0
-      },
-      "due-date": "2026-01-05",
-      "comments": 1,
-      "attached-docs": 0,
-      "requiremnet-created": "2025-11-05",
-      "assigned-to": "Suresh N",
-      "card-bucket": "quick-call",
-      "id": "d145"
-    },
-    {
-      "req-id": "REQ-2025-0070",
-      "training-title": "Data Science with R",
-      "client-name": "Capgemini",
-      "mode-of-training": "Classroom",
-      "probability": 30,
-      "priority": "Low",
-      "trainers-selected": {
-        "ai": 2,
-        "manual": 0
-      },
-      "due-date": "2026-01-05",
-      "comments": 1,
-      "attached-docs": 0,
-      "requiremnet-created": "2025-11-05",
-      "assigned-to": "Suresh N",
-      "card-bucket": "completed",
-      "id": "d145"
+      "card-bucket": "archive",
+      "id": "d146"
     },
     {
       "req-id": "REQ-2025-010",
@@ -263,60 +73,225 @@
       "attached-docs": 2,
       "requiremnet-created": "2025-11-12",
       "assigned-to": "Ajay Singh",
-      "card-bucket": "in-discussion",
+      "card-bucket": "payments",
       "id": "1be3"
+    },
+    {
+      "req-id": "REQ-2025-012",
+      "training-title": "AI-Driven Business Intelligence",
+      "client-name": "Wipro",
+      "mode-of-training": "Online",
+      "probability": 60,
+      "priority": "Medium",
+      "trainers-selected": {
+        "ai": 3,
+        "manual": 1
+      },
+      "due-date": "2026-02-14",
+      "comments": 4,
+      "attached-docs": 1,
+      "requiremnet-created": "2025-11-15",
+      "assigned-to": "Kiran J",
+      "card-bucket": "to-do",
+      "id": "ac12"
+    },
+    {
+      "req-id": "REQ-2025-013",
+      "training-title": "Cloud Infrastructure Automation with Terraform",
+      "client-name": "HCL Technologies",
+      "mode-of-training": "Classroom",
+      "probability": 45,
+      "priority": "Medium",
+      "trainers-selected": {
+        "ai": 1,
+        "manual": 2
+      },
+      "due-date": "2026-01-25",
+      "comments": 2,
+      "attached-docs": 3,
+      "requiremnet-created": "2025-11-20",
+      "assigned-to": "Neha Rao",
+      "card-bucket": "archive",
+      "id": "cf88"
+    },
+    {
+      "req-id": "REQ-2025-014",
+      "training-title": "Cybersecurity Foundations",
+      "client-name": "Tech Mahindra",
+      "mode-of-training": "Online",
+      "probability": 75,
+      "priority": "High",
+      "trainers-selected": {
+        "ai": 0,
+        "manual": 3
+      },
+      "due-date": "2026-03-10",
+      "comments": 7,
+      "attached-docs": 2,
+      "requiremnet-created": "2025-12-01",
+      "assigned-to": "Manisha K",
+      "card-bucket": "clients-court",
+      "id": "b02d"
+    },
+    {
+      "req-id": "REQ-2025-015",
+      "training-title": "Java Spring Boot Microservices",
+      "client-name": "LTIMindtree",
+      "mode-of-training": "Classroom",
+      "probability": 40,
+      "priority": "Low",
+      "trainers-selected": {
+        "ai": 1,
+        "manual": 4
+      },
+      "due-date": "2026-02-20",
+      "comments": 0,
+      "attached-docs": 0,
+      "requiremnet-created": "2025-10-29",
+      "assigned-to": "Ritu Sharma",
+      "card-bucket": "payments",
+      "id": "de44"
+    },
+    {
+      "req-id": "REQ-2025-016",
+      "training-title": "SQL Performance Optimization",
+      "client-name": "Dell Technologies",
+      "mode-of-training": "Online",
+      "probability": 20,
+      "priority": "Low",
+      "trainers-selected": {
+        "ai": 1,
+        "manual": 1
+      },
+      "due-date": "2026-04-02",
+      "comments": 3,
+      "attached-docs": 1,
+      "requiremnet-created": "2025-11-10",
+      "assigned-to": "Mahesh P",
+      "card-bucket": "to-do",
+      "id": "bd67"
+    },
+    {
+      "req-id": "REQ-2025-017",
+      "training-title": "Angular 18 Complete Workshop",
+      "client-name": "Accenture",
+      "mode-of-training": "Classroom",
+      "probability": 52,
+      "priority": "Medium",
+      "trainers-selected": {
+        "ai": 2,
+        "manual": 3
+      },
+      "due-date": "2026-02-08",
+      "comments": 5,
+      "attached-docs": 1,
+      "requiremnet-created": "2025-10-18",
+      "assigned-to": "Sahana R",
+      "card-bucket": "archive",
+      "id": "e91f"
+    },
+    {
+      "req-id": "REQ-2025-018",
+      "training-title": "Machine Learning with Scikit-Learn",
+      "client-name": "TCS",
+      "mode-of-training": "Online",
+      "probability": 78,
+      "priority": "High",
+      "trainers-selected": {
+        "ai": 3,
+        "manual": 0
+      },
+      "due-date": "2026-01-18",
+      "comments": 9,
+      "attached-docs": 3,
+      "requiremnet-created": "2025-11-30",
+      "assigned-to": "Vishal N",
+      "card-bucket": "clients-court",
+      "id": "f7a1"
+    },
+    {
+      "req-id": "REQ-2025-019",
+      "training-title": "Project Management Foundations",
+      "client-name": "Siemens",
+      "mode-of-training": "Classroom",
+      "probability": 25,
+      "priority": "Low",
+      "trainers-selected": {
+        "ai": 0,
+        "manual": 2
+      },
+      "due-date": "2026-02-14",
+      "comments": 1,
+      "attached-docs": 0,
+      "requiremnet-created": "2025-11-06",
+      "assigned-to": "Kavya M",
+      "card-bucket": "payments",
+      "id": "c204"
+    },
+    {
+      "req-id": "REQ-2025-020",
+      "training-title": "Docker & Kubernetes Hands-On",
+      "client-name": "Bosch",
+      "mode-of-training": "Online",
+      "probability": 65,
+      "priority": "Medium",
+      "trainers-selected": {
+        "ai": 2,
+        "manual": 1
+      },
+      "due-date": "2026-01-28",
+      "comments": 4,
+      "attached-docs": 2,
+      "requiremnet-created": "2025-12-02",
+      "assigned-to": "Pavan D",
+      "card-bucket": "archive",
+      "id": "aa15"
+    },
+    {
+      "req-id": "REQ-2025-021",
+      "training-title": "SAP ABAP for Beginners",
+      "client-name": "IBM",
+      "mode-of-training": "Classroom",
+      "probability": 50,
+      "priority": "Medium",
+      "trainers-selected": {
+        "ai": 1,
+        "manual": 2
+      },
+      "due-date": "2026-03-02",
+      "comments": 2,
+      "attached-docs": 4,
+      "requiremnet-created": "2025-11-25",
+      "assigned-to": "Ananya J",
+      "card-bucket": "in-training",
+      "id": "bb9a"
     }
   ],
   "columns": [
     {
       "id": "1",
       "title": "TO DO",
-      "position": 8
+      "position": 1
     },
     {
       "id": "2",
       "title": "Clients Court",
-      "position": 11
-    },
-    {
-      "id": "3",
-      "title": "In Discussion",
-      "position": 4
-    },
-    {
-      "id": "4",
-      "title": "In Training",
-      "position": 3
-    },
-    {
-      "id": "5",
-      "title": "Payments",
       "position": 2
     },
     {
       "id": "6",
-      "title": "Completed",
-      "position": 6
+      "title": "In Training",
+      "position": 3
     },
     {
-      "id": "7",
-      "title": "On hold",
-      "position": 7
-    },
-    {
-      "id": "8",
+      "id": "4",
       "title": "Archive",
-      "position": 10
+      "position": 4
     },
     {
-      "id": "9",
-      "title": "Dropped",
-      "position": 1
-    },
-    {
-      "id": "10",
-      "title": "Quick Call",
-      "position": 12
+      "id": "5",
+      "title": "Payments",
+      "position": 5
     }
   ]
 }

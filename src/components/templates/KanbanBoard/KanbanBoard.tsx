@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import type { DropResult } from '@hello-pangea/dnd';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { fetchColumns } from '../../../features/columns';
-import { fetchTasks } from '../../../features/tasks';
+import { fetchTasks, reorderTaskSameColumn, moveTaskToOtherColumn, updateTaskColumn } from '../../../features/tasks';
 import type { Task } from '../../../features/tasks/taskActions';
 import './KanbanBoard.css';
 
@@ -36,23 +38,73 @@ export default function KanbanBoard() {
     return () => clearTimeout(timer);
   }, [dispatch, columns.length, rawTasks.length]);
 
-  // Helper function to convert column title to bucket name
+  /**
+   * Helper function to convert column title to bucket name
+   */
   const getBucketName = (columnTitle: string): string => {
-    // Predefined mappings for existing columns (for backward compatibility)
     const knownMappings: Record<string, string> = {
       'Dropped': 'dropped',
-      'TO DO': 'todo',
-      'Clients Court': 'in-client',
+      'TO DO': 'to-do',
+      'Clients Court': 'clients-court',
       'In Discussion': 'in-discussion',
-      'In Training': 'at-training',
-      'Payments': 'payment',
+      'In Training': 'in-training',
+      'Payments': 'payments',
       'Completed': 'completed',
       'On hold': 'on-hold',
-      'Archive': 'archived',
+      'Archive': 'archive',
     };
 
-    // Return known mapping if exists, otherwise auto-generate
     return knownMappings[columnTitle] || columnTitle.toLowerCase().replace(/\s+/g, '-');
+  };
+
+   /* Handles both reordering within same column and moving between columns*/
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+
+    // Dropped outside any droppable area
+    if (!destination) {
+      return;
+    }
+
+    // Dropped in same position
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    const sourceColumnId = source.droppableId;
+    const destinationColumnId = destination.droppableId;
+    const taskId = draggableId;
+
+    // CASE 1: Reordering within the same column
+    if (sourceColumnId === destinationColumnId) {
+      
+      // Optimistic update: reorder tasks in Redux immediately
+      dispatch(reorderTaskSameColumn(
+        sourceColumnId,
+        taskId,
+        source.index,
+        destination.index
+      ));
+ 
+    } 
+    // CASE 2: Moving task to a different column
+    else {
+      
+      // Optimistic update: move task in Redux immediately
+      dispatch(moveTaskToOtherColumn(
+        taskId,
+        sourceColumnId,
+        destinationColumnId,
+        source.index,
+        destination.index
+      ));
+
+      // Persist change to backend: update task's card-bucket
+      dispatch(updateTaskColumn(taskId, destinationColumnId) as any);
+    }
   };
 
   const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
@@ -93,6 +145,7 @@ export default function KanbanBoard() {
   }
 
   return (
+    <DragDropContext onDragEnd={onDragEnd}>
     <div id="kanban-board-root" style={{
       width: '100%',
       minHeight: '100vh',
@@ -119,7 +172,7 @@ export default function KanbanBoard() {
             Karya Board
           </h1>
           <p style={{ margin: '8px 0 0 0', color: '#6b7280', fontSize: '14px' }}>
-            Training Requirements Management
+            Training Requirements Management • Drag cards to reorder
           </p>
         </div>
 
@@ -157,18 +210,29 @@ export default function KanbanBoard() {
           sortedColumns.map((column, index) => {
             const bucketName = getBucketName(column.title);
             const columnTasks = rawTasks.filter((task: Task) => task && task['card-bucket'] === bucketName);
-
+            
             const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
             const bgColor = colors[index % colors.length];
 
             return (
-              <div key={column.id} style={{
+              <Droppable droppableId={bucketName} key={column.id}>
+                {(provided, snapshot) => (
+              <div 
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                style={{
                 minWidth: '340px',
                 maxWidth: '340px',
-                background: 'white',
+                background: snapshot.isDraggingOver ? '#e0e7ff' : 'white',
                 borderRadius: '12px',
                 padding: '16px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                boxShadow: snapshot.isDraggingOver 
+                  ? '0 8px 16px rgba(99, 102, 241, 0.3)' 
+                  : '0 2px 4px rgba(0,0,0,0.1)',
+                transition: 'all 0.2s',
+                border: snapshot.isDraggingOver 
+                  ? '2px dashed #6366f1' 
+                  : '2px solid transparent'
               }}>
                 {/* Column Header */}
                 <div style={{
@@ -205,31 +269,40 @@ export default function KanbanBoard() {
                   flexDirection: 'column',
                   gap: '12px',
                   maxHeight: 'calc(100vh - 250px)',
-                  overflowY: 'auto'
+                  overflowY: 'auto',
+                  minHeight: '100px'
                 }}>
-                  {columnTasks.map((task: Task) => {
+                  {columnTasks.map((task: Task, taskIndex: number) => {
                     if (!task) return null;
 
                     return (
-                      <div key={task['req-id']} style={{
-                        background: '#f9fafb',
-                        border: '1px solid #e5e7eb',
+                      <Draggable 
+                        key={task['req-id']} 
+                        draggableId={task['req-id']} 
+                        index={taskIndex}
+                      >
+                        {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={{
+                        ...provided.draggableProps.style,
+                        background: snapshot.isDragging ? '#fef3c7' : '#f9fafb',
+                        border: snapshot.isDragging 
+                          ? '2px solid #f59e0b' 
+                          : '1px solid #e5e7eb',
                         borderRadius: '8px',
                         padding: '16px',
-                        transition: 'all 0.2s',
-                        cursor: 'pointer',
+                        cursor: snapshot.isDragging ? 'grabbing' : 'grab',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '12px'
-                      }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                        }}>
+                        gap: '12px',
+                        boxShadow: snapshot.isDragging 
+                          ? '0 8px 16px rgba(0,0,0,0.2)' 
+                          : 'none',
+                        userSelect: 'none'
+                      }}>
                         {/* 1. Header: ID & Priority */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600' }}>
@@ -329,23 +402,32 @@ export default function KanbanBoard() {
                           <span>Created: {formatDate(task['requiremnet-created'])}</span>
                           <span style={{ fontWeight: '600', color: '#4b5563' }}>Due: {formatDate(task['due-date'])}</span>
                         </div>
-
+                        {/* Task Content */}
                       </div>
+                        )}
+                      </Draggable>
                     );
                   })}
+
+                  {provided.placeholder}
 
                   {columnTasks.length === 0 && (
                     <div style={{
                       textAlign: 'center',
                       padding: '40px 20px',
                       color: '#9ca3af',
-                      fontSize: '14px'
+                      fontSize: '14px',
+                      border: '2px dashed #d1d5db',
+                      borderRadius: '8px',
+                      background: snapshot.isDraggingOver ? '#f0f9ff' : 'transparent'
                     }}>
-                      No tasks
+                      {snapshot.isDraggingOver ? 'Drop here' : 'No tasks'}
                     </div>
                   )}
                 </div>
               </div>
+                )}
+              </Droppable>
             );
           })
         ) : (
@@ -368,5 +450,6 @@ export default function KanbanBoard() {
         }
       `}</style>
     </div>
+    </DragDropContext>
   );
 }

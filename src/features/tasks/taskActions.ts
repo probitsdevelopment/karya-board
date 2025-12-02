@@ -17,7 +17,12 @@ export const DELETE_TASK_REQUEST = 'DELETE_TASK_REQUEST';
 export const DELETE_TASK_SUCCESS = 'DELETE_TASK_SUCCESS';
 export const DELETE_TASK_FAILURE = 'DELETE_TASK_FAILURE';
 
+// Drag and Drop Action Types
+export const REORDER_TASK_SAME_COLUMN = 'REORDER_TASK_SAME_COLUMN';
+export const MOVE_TASK_TO_OTHER_COLUMN = 'MOVE_TASK_TO_OTHER_COLUMN';
+
 export interface Task {
+  id?: string; // Added for drag-and-drop
   'req-id': string;
   'training-title': string;
   'client-name': string;
@@ -92,6 +97,74 @@ export const deleteTaskFailure = (error: string) => ({
   type: DELETE_TASK_FAILURE as typeof DELETE_TASK_FAILURE,
   payload: error,
 });
+
+
+/*
+ * Used when dragging task to different position in same column*/
+export const reorderTaskSameColumn = (
+  columnId: string,
+  taskId: string,
+  sourceIndex: number,
+  destinationIndex: number
+) => ({
+  type: REORDER_TASK_SAME_COLUMN as typeof REORDER_TASK_SAME_COLUMN,
+  payload: { columnId, taskId, sourceIndex, destinationIndex },
+});
+
+/**
+ * Move task from one column to another (optimistic update for UI)
+ * Used when dragging task to a different column
+ */
+export const moveTaskToOtherColumn = (
+  taskId: string,
+  sourceColumnId: string,
+  destinationColumnId: string,
+  sourceIndex: number,
+  destinationIndex: number
+) => ({
+  type: MOVE_TASK_TO_OTHER_COLUMN as typeof MOVE_TASK_TO_OTHER_COLUMN,
+  payload: { taskId, sourceColumnId, destinationColumnId, sourceIndex, destinationIndex },
+});
+
+/**
+ * Update task's column in backend
+ * Thunk action to persist column change to json-server
+ */
+export const updateTaskColumn = (taskReqId: string, newColumnId: string) => {
+  return async (dispatch: any, getState: any) => {
+    try {
+      // Find the task by req-id to get its actual id for the API call
+      const state = getState();
+      const task = state.tasks.tasks.find((t: Task) => t['req-id'] === taskReqId);
+      
+      if (!task || !task.id) {
+        console.error(`Task with req-id ${taskReqId} not found or missing id field`);
+        return;
+      }
+
+      console.log(`🔄 Updating task ${taskReqId} (id: ${task.id}) to bucket: ${newColumnId}`);
+      
+      const response = await fetch(`${API_ENDPOINTS.TASKS}/${task.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'card-bucket': newColumnId }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('✅ Task updated successfully:', data);
+      
+      // Update task in state with new column
+      dispatch(updateTaskSuccess(data));
+    } catch (error) {
+      console.error('❌ Failed to update task column:', error);
+      dispatch(updateTaskFailure((error as Error).message));
+    }
+  };
+};
 
 // Thunk Actions
 export const fetchTasks = () => {
@@ -176,4 +249,6 @@ export type TaskAction =
   | ReturnType<typeof updateTaskFailure>
   | ReturnType<typeof deleteTaskRequest>
   | ReturnType<typeof deleteTaskSuccess>
-  | ReturnType<typeof deleteTaskFailure>;
+  | ReturnType<typeof deleteTaskFailure>
+  | ReturnType<typeof reorderTaskSameColumn>
+  | ReturnType<typeof moveTaskToOtherColumn>;
