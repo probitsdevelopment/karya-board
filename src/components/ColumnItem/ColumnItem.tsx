@@ -1,5 +1,5 @@
-import type { Column } from '../../features/columns/columnsSlice';
-import { GripIcon, TrashIcon } from '../Icons';
+import type { Column } from '../../features/columns/columnActions';
+import { TrashIcon } from '../Icons';
 
 interface ColumnItemProps {
   column: Column;
@@ -42,11 +42,6 @@ export default function ColumnItem({
       }}
     >
       <div className="karya-column-content">
-        {/* Drag Handle */}
-        <div className="karya-drag-handle">
-          <GripIcon />
-        </div>
-
         {/* Position Number */}
         <div className="karya-position-wrapper">
           <input

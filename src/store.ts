@@ -1,13 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { columnsReducer } from './features/columns';
-import tasksReducer from './features/tasks/tasksSlice';
+import { createStore, applyMiddleware } from 'redux';
+import { thunk } from 'redux-thunk';
+import { composeWithDevTools } from '@redux-devtools/extension';
+import rootReducer from './reducers/rootReducer';
 
-export const store = configureStore({
-    reducer: {
-        columns: columnsReducer,
-        tasks: tasksReducer,
-    },
-});
+//Don't use this in production
+const enhancer = composeWithDevTools(applyMiddleware(thunk));
 
-export type RootState = ReturnType<typeof store.getState>;
+export const store = createStore(rootReducer, enhancer as any);
+
 export type AppDispatch = typeof store.dispatch;
+export type { RootState } from './reducers/rootReducer';
